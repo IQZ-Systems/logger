@@ -25,6 +25,9 @@ export class AppLogger {
    * @param  {object} meta    Additional metadata as an object.
    */
   public error(message: string, meta: object): void {
+    if (!this._logger) {
+      throw new Error('Logger not initialized. Call AppLogger.init() first.');
+    }
     this._logger.error(message, meta);
   }
 
@@ -71,9 +74,12 @@ export class AppLogger {
   morganWriteStream: StreamOptions;
 
   private constructor() {
+  }
+
+  public init(logPath: string, logLevel: 'debug' | 'info'): void {
     try {
       this._logger = new Logger({
-        transports: this._getTransports(),
+        transports: this._getTransports(logPath, logLevel),
         exitOnError: false
       });
 
@@ -81,8 +87,7 @@ export class AppLogger {
       this._initializeStreams();
     } catch (error) {
       console.error('Error initializing AppLogger.', error);
-      console.error('Quitting app...');
-      process.exit(2);
+      throw error;
     }
   }
 
@@ -103,10 +108,10 @@ export class AppLogger {
     };
   }
 
-  private _getTransports(): TransportInstance[] {
+  private _getTransports(logPath: string, logLevel: 'debug' | 'info'): TransportInstance[] {
     let consoleTransportOpt: ConsoleTransportOptions = {
       colorize: true,
-      level: process.env.NODE_ENV == 'development' ? 'debug' : 'info',
+      level: logLevel,
       handleExceptions: true,
       humanReadableUnhandledException: true,
       json: false
@@ -114,16 +119,16 @@ export class AppLogger {
 
     // Check if log folder exists. If not, create it.
     // Winston logger will fail otherwise.
-    let logFolderPath: string = path.join(process.env.WORK_DIR as string, 'logs');
+    let logFolderPath: string = path.join(logPath, 'logs');
     if (!fs.existsSync(logFolderPath)) {
       fs.mkdirSync(logFolderPath);
     }
     console.log('Created logs folder at :', logFolderPath);
 
     let dailyFileRotateTransportOpt: DailyRotateFileTransportOptions = {
-      filename: path.join(process.env.WORK_DIR as string, 'logs', 'server-log'),
+      filename: path.join(logPath, 'logs', 'server-log'),
       datePattern: 'yyyy-MM-dd.log',
-      level: process.env.NODE_ENV == 'development' ? 'debug' : 'info',
+      level: logLevel,
       handleExceptions: true,
       humanReadableUnhandledException: true,
       json: true,
