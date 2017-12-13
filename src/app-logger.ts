@@ -24,7 +24,7 @@ export class AppLogger {
    * @param  {string} message The message to be logged.
    * @param  {object} meta    Additional metadata as an object.
    */
-  error(message: string, meta: object): void {
+  public error(message: string, meta: object): void {
     this._logger.error(message, meta);
   }
 
