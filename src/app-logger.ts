@@ -21,9 +21,12 @@ export class AppLogger {
   /**
    * Highest priority log level. Priority: 0
    * @method error
-   * @return {LeveledLogMethod}    Method to log errors.
+   * @param  {string} message The message to be logged.
+   * @param  {object} meta    Additional metadata as an object.
    */
-  error: LeveledLogMethod;
+  error(message: string, meta: object): void {
+    this._logger.error(message, meta);
+  }
 
   /**
    * Second highest priority log level. Priority: 1
