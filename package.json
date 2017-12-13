@@ -1,0 +1,33 @@
+{
+  "name": "@iqz/logger",
+  "version": "1.0.0",
+  "description": "A wrapper for Winston which eases logging.",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "postinstall": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/iqzsystems/logger.git"
+  },
+  "keywords": [
+    "logger",
+    "utilities",
+    "winston"
+  ],
+  "author": "IQZ Systems",
+  "license": "SEE LICENSE IN LICENSE",
+  "homepage": "https://bitbucket.org/iqzsystems/logger#readme",
+  "dependencies": {
+    "morgan": "^1.9.0",
+    "winston": "^2.4.0",
+    "winston-daily-rotate-file": "^1.7.2",
+    "@types/morgan": "^1.7.35",
+    "@types/node": "^8.0.58",
+    "@types/winston": "^2.3.7",
+    "typescript": "^2.6.2"
+  }
+}
