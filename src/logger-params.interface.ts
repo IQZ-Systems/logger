@@ -1,7 +1,7 @@
 import { LogLevel } from './log-level.enum';
 
 export interface ILoggerParams {
-  console: {
+  console?: {
     level: LogLevel
   }
   file?: {

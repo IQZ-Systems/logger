@@ -48,14 +48,16 @@ export class AppLogger {
   private _getTransports(params: ILoggerParams): TransportInstance[] {
     let t: TransportInstance[] = [];
 
-    let consoleTransportOpt: ConsoleTransportOptions = {
-      colorize: true,
-      level: params.console.level,
-      handleExceptions: true,
-      humanReadableUnhandledException: true,
-      json: false
-    };
-    t.push(new transports.Console(consoleTransportOpt));
+    if (params.console && params.console.level) {
+      let consoleTransportOpt: ConsoleTransportOptions = {
+        colorize: true,
+        level: params.console.level,
+        handleExceptions: true,
+        humanReadableUnhandledException: true,
+        json: false
+      };
+      t.push(new transports.Console(consoleTransportOpt));
+    }
 
     if (params.file && params.file.path) {
       // Check if log folder exists. If not, create it.
@@ -64,10 +66,9 @@ export class AppLogger {
       if (!fs.existsSync(logFolderPath)) {
         fs.mkdirSync(logFolderPath);
       }
-      console.log('Created logs folder at :', logFolderPath);
 
       let dailyFileRotateTransportOpt: DailyRotateFileTransportOptions = {
-        filename: path.join(params.file.path, 'logs', 'server-log'),
+        filename: path.join(params.file.path, 'logs', 'server-log-'),
         datePattern: 'yyyy-MM-dd.log',
         level: params.file.level,
         handleExceptions: true,
