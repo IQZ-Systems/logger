@@ -5,8 +5,7 @@ import * as path from 'path';
 import * as readline from 'readline';
 import * as del from 'del';
 
-import { AppLogger } from './app-logger';
-import { LogLevel } from './log-level.enum';
+import { AppLogger, LogLevel } from '../src';
 
 const folderRoot = path.join(__dirname, '..');
 const logsFolder = path.join(folderRoot, 'logs')
