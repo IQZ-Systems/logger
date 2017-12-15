@@ -37,6 +37,7 @@ export class AppLogger {
     }
   }
 
+  // TODO: Test and fix redirection of morgan logs
   private _initializeStreams(): void {
     this.morganWriteStream = {
       write: (message) => {
