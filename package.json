@@ -6,12 +6,12 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "postinstall": "npm run build",
+    "prepublishOnly": "npm run build",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/iqzsystems/logger.git"
+    "url": "git+ssh://git@github.com:IQZ-Systems/logger.git"
   },
   "keywords": [
     "logger",
@@ -19,8 +19,8 @@
     "winston"
   ],
   "author": "IQZ Systems",
-  "license": "SEE LICENSE IN LICENSE",
-  "homepage": "https://bitbucket.org/iqzsystems/logger#readme",
+  "license": "MIT",
+  "homepage": "https://github.com/IQZ-Systems/logger#iqz-logger",
   "dependencies": {
     "@types/node": "^8.0.58",
     "@types/winston": "^2.3.7",
