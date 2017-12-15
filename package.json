@@ -19,7 +19,7 @@
     "winston"
   ],
   "author": "IQZ Systems",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "MIT",
   "homepage": "https://bitbucket.org/iqzsystems/logger#readme",
   "dependencies": {
     "@types/node": "^8.0.58",
