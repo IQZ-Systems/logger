@@ -1,2 +1,7 @@
+.editorconfig
+.jshintrc
+
+bitbucket-pipelines.yml
+
 src/
 tests/
