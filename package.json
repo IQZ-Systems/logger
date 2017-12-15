@@ -23,6 +23,7 @@
   "license": "MIT",
   "homepage": "https://github.com/IQZ-Systems/logger#iqz-logger",
   "dependencies": {
+    "@types/morgan": "^1.7.35",
     "@types/node": "^8.0.58",
     "@types/winston": "^2.3.7",
     "morgan": "^1.9.0",
@@ -34,7 +35,6 @@
     "@types/chai": "^4.0.10",
     "@types/del": "^3.0.0",
     "@types/mocha": "^2.2.44",
-    "@types/morgan": "^1.7.35",
     "chai": "^4.1.2",
     "del": "^3.0.0",
     "mocha": "^4.0.1",
