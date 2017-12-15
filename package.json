@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@bitbucket.org/iqzsystems/logger.git"
+    "url": "git+ssh://git@github.com:IQZ-Systems/logger.git"
   },
   "keywords": [
     "logger",
@@ -20,7 +20,7 @@
   ],
   "author": "IQZ Systems",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/iqzsystems/logger#readme",
+  "homepage": "https://github.com/IQZ-Systems/logger#iqz-logger",
   "dependencies": {
     "@types/node": "^8.0.58",
     "@types/winston": "^2.3.7",
