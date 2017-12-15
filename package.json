@@ -4,6 +4,7 @@
   "description": "A wrapper for Winston which eases logging.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "private": false,
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",
