@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "postinstall": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
   },
   "repository": {
     "type": "git",
@@ -22,12 +22,21 @@
   "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://bitbucket.org/iqzsystems/logger#readme",
   "dependencies": {
-    "morgan": "^1.9.0",
-    "winston": "^2.4.0",
-    "winston-daily-rotate-file": "^1.7.2",
-    "@types/morgan": "^1.7.35",
     "@types/node": "^8.0.58",
     "@types/winston": "^2.3.7",
-    "typescript": "^2.6.2"
+    "morgan": "^1.9.0",
+    "typescript": "^2.6.2",
+    "winston": "^2.4.0",
+    "winston-daily-rotate-file": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.0.10",
+    "@types/del": "^3.0.0",
+    "@types/mocha": "^2.2.44",
+    "@types/morgan": "^1.7.35",
+    "chai": "^4.1.2",
+    "del": "^3.0.0",
+    "mocha": "^4.0.1",
+    "ts-node": "^4.0.1"
   }
 }

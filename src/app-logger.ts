@@ -12,86 +12,32 @@ import {
 import { StreamOptions } from 'morgan';
 import 'winston-daily-rotate-file';
 
+import { LogLevel } from './log-level.enum';
+import { ILoggerParams } from './logger-params.interface';
+
 export class AppLogger {
 
   private static _instance: AppLogger;
 
   private _logger: LoggerInstance;
 
-  /**
-   * Highest priority log level. Priority: 0
-   * @method error
-   * @return {LeveledLogMethod}    Method to log errors.
-   */
-  error: LeveledLogMethod;
+  private constructor() { }
 
-  /**
-   * Second highest priority log level. Priority: 1
-   * @method warn
-   * @return {LeveledLogMethod}    Method to log warnings.
-   */
-  warn: LeveledLogMethod;
-
-  /**
-   * Normal informational log level. Priority: 2
-   * @method info
-   * @return {LeveledLogMethod}    Method to log informational messages.
-   */
-  info: LeveledLogMethod;
-
-  /**
-   * Verbose (more detailed) informational log level. Priority: 3
-   * @method verbose
-   * @return {LeveledLogMethod}    Method to log detailed informational messages.
-   */
-  verbose: LeveledLogMethod;
-
-  /**
-   * Debug log level. Priority: 4
-   * @method debug
-   * @return {LeveledLogMethod}    Method to log debug information.
-   */
-  debug: LeveledLogMethod;
-
-  /**
-   * Lowest priority log level. Priority: 5
-   * @method silly
-   * @return {LeveledLogMethod}    Method to log least priority information.
-   */
-  silly: LeveledLogMethod;
-
-  /**
-   * Write stream accepting morgan input.
-   * @method constructor
-   * @return {StreamOptions}    An object with morgan stream properties.
-   */
-  morganWriteStream: StreamOptions;
-
-  private constructor() {
+  public init(params: ILoggerParams): void {
     try {
       this._logger = new Logger({
-        transports: this._getTransports(),
+        transports: this._getTransports(params),
         exitOnError: false
       });
 
-      this._mapMethods();
       this._initializeStreams();
     } catch (error) {
       console.error('Error initializing AppLogger.', error);
-      console.error('Quitting app...');
-      process.exit(2);
+      throw error;
     }
   }
 
-  private _mapMethods(): void {
-    this.error = this._logger.error;
-    this.warn = this._logger.warn;
-    this.info = this._logger.info;
-    this.verbose = this._logger.verbose;
-    this.debug = this._logger.debug;
-    this.silly = this._logger.silly;
-  }
-
+  // TODO: Test and fix redirection of morgan logs
   private _initializeStreams(): void {
     this.morganWriteStream = {
       write: (message) => {
@@ -100,38 +46,116 @@ export class AppLogger {
     };
   }
 
-  private _getTransports(): TransportInstance[] {
-    let consoleTransportOpt: ConsoleTransportOptions = {
-      colorize: true,
-      level: process.env.NODE_ENV == 'development' ? 'debug' : 'info',
-      handleExceptions: true,
-      humanReadableUnhandledException: true,
-      json: false
-    };
+  private _getTransports(params: ILoggerParams): TransportInstance[] {
+    let t: TransportInstance[] = [];
 
-    // Check if log folder exists. If not, create it.
-    // Winston logger will fail otherwise.
-    let logFolderPath: string = path.join(process.env.WORK_DIR as string, 'logs');
-    if (!fs.existsSync(logFolderPath)) {
-      fs.mkdirSync(logFolderPath);
+    if (params.console && params.console.level) {
+      let consoleTransportOpt: ConsoleTransportOptions = {
+        colorize: true,
+        level: params.console.level,
+        handleExceptions: true,
+        humanReadableUnhandledException: true,
+        json: false
+      };
+      t.push(new transports.Console(consoleTransportOpt));
     }
-    console.log('Created logs folder at :', logFolderPath);
 
-    let dailyFileRotateTransportOpt: DailyRotateFileTransportOptions = {
-      filename: path.join(process.env.WORK_DIR as string, 'logs', 'server-log'),
-      datePattern: 'yyyy-MM-dd.log',
-      level: process.env.NODE_ENV == 'development' ? 'debug' : 'info',
-      handleExceptions: true,
-      humanReadableUnhandledException: true,
-      json: true,
-      maxFiles: 30
-    };
+    if (params.file && params.file.path) {
+      // Check if log folder exists. If not, create it.
+      // Winston logger will fail otherwise.
+      let logFolderPath: string = path.join(params.file.path, 'logs');
+      if (!fs.existsSync(logFolderPath)) {
+        fs.mkdirSync(logFolderPath);
+      }
 
-    return [
-      new transports.Console(consoleTransportOpt),
-      new transports.DailyRotateFile(dailyFileRotateTransportOpt)
-    ];
+      let dailyFileRotateTransportOpt: DailyRotateFileTransportOptions = {
+        filename: path.join(params.file.path, 'logs', 'server-log-'),
+        datePattern: 'yyyy-MM-dd.log',
+        level: params.file.level,
+        handleExceptions: true,
+        humanReadableUnhandledException: true,
+        json: params.file.logAsJson,
+        maxFiles: params.file.maxFileCount
+      };
+      t.push(new transports.DailyRotateFile(dailyFileRotateTransportOpt));
+    }
+
+    return t;
   }
+
+  private _log(level: LogLevel, msg: string, meta?: object | object[]): void {
+    if (!this._logger) {
+      throw new Error('Logger not initialized. Call AppLogger.Log.init() first. You only need to do this once in your application.');
+    }
+    this._logger.log(level, msg, meta);
+  }
+
+  /**
+   * Highest priority log level. Priority: 0
+   * @method error
+   * @param  {string}             message An error message.
+   * @param  {object | object[]}  meta Additional metadata as an object.
+   */
+  public error(message: string, meta?: object | object[]): void {
+    this._log(LogLevel.ERROR, message, meta);
+  }
+
+  /**
+   * Second highest priority log level. Priority: 1
+   * @method warn
+   * @param  {string}             message A warning.
+   * @param  {object | object[]}  meta Additional metadata as an object.
+   */
+  public warn(message: string, meta?: object | object[]): void {
+    this._log(LogLevel.WARNING, message, meta);
+  }
+
+  /**
+   * Normal informational log level. Priority: 2
+   * @method info
+   * @param  {string}             message An informational message.
+   * @param  {object | object[]}  meta Additional metadata as an object.
+   */
+  public info(message: string, meta?: object | object[]): void {
+    this._log(LogLevel.INFO, message, meta);
+  }
+
+  /**
+   * Verbose (more detailed) informational log level. Priority: 3
+   * @method verbose
+   * @param  {string}             message A more detailed informational message.
+   * @param  {object | object[]}  meta Additional metadata as an object.
+   */
+  public verbose(message: string, meta?: object | object[]): void {
+    this._log(LogLevel.VERBOSE, message, meta);
+  }
+
+  /**
+   * Debug log level. Priority: 4
+   * @method debug
+   * @param  {string}             message A debug information.
+   * @param  {object | object[]}  meta Additional metadata as an object.
+   */
+  public debug(message: string, meta?: object | object[]): void {
+    this._log(LogLevel.DEBUG, message, meta);
+  }
+
+  /**
+   * Lowest priority log level. Priority: 5
+   * @method silly
+   * @param  {string}             message A silly message.
+   * @param  {object | object[]}  meta Additional metadata as an object.
+   */
+  public silly(message: string, meta?: object | object[]): void {
+    this._log(LogLevel.SILLY, message, meta);
+  }
+
+  /**
+   * Write stream accepting morgan input.
+   * @method constructor
+   * @return {StreamOptions}    An object with morgan stream properties.
+   */
+  morganWriteStream: StreamOptions;
 
   /**
    * Gets an instance of the AppLogger, either the existing or creating a new one if not exist.
