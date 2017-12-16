@@ -2,6 +2,14 @@
 
 A wrapper for [WinstonJS][link-winston] with lots of configuration headaches already taken care of.
 
+## Installation
+
+```
+npm install -S @iqz/logger
+```
+
+Logger includes TypeScript type definitions within the package, so you don't have to install anything in addition to the above.
+
 ## Usage
 
 Import the logger
