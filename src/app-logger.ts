@@ -9,7 +9,6 @@ import {
   DailyRotateFileTransportOptions,
   transports
 } from 'winston';
-import { StreamOptions } from 'morgan';
 import 'winston-daily-rotate-file';
 
 import { LogLevel } from './log-level.enum';
@@ -138,13 +137,6 @@ export class AppLogger {
   public silly(message: string, meta?: object | object[]): void {
     this._log(LogLevel.SILLY, message, meta);
   }
-
-  /**
-   * Write stream accepting morgan input.
-   * @method constructor
-   * @return {StreamOptions}    An object with morgan stream properties.
-   */
-  morganWriteStream: StreamOptions;
 
   /**
    * Gets an instance of the AppLogger, either the existing or creating a new one if not exist.
