@@ -29,21 +29,10 @@ export class AppLogger {
         transports: this._getTransports(params),
         exitOnError: false
       });
-
-      this._initializeStreams();
     } catch (error) {
       console.error('Error initializing AppLogger.', error);
       throw error;
     }
-  }
-
-  // TODO: Test and fix redirection of morgan logs
-  private _initializeStreams(): void {
-    this.morganWriteStream = {
-      write: (message) => {
-        this.info(message);
-      }
-    };
   }
 
   private _getTransports(params: ILoggerParams): TransportInstance[] {
