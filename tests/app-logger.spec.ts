@@ -244,11 +244,5 @@ function writeLogWithTimeout(level: LogLevel, timeoutSeconds: number): Promise<v
 
 function cleanLogsSync(logsPath): void {
   logsPath = path.join(logsPath, '**');
-  console.log('Attempting delete of : ', logsPath);
-  try {
-    rimraf.sync(logsPath);
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
+  rimraf.sync(logsPath);
 }
