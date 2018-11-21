@@ -3,7 +3,7 @@ import 'mocha';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as readline from 'readline';
-import * as del from 'del';
+import * as rimraf from 'rimraf';
 
 import { AppLogger, LogLevel } from '../src';
 
@@ -243,5 +243,6 @@ function writeLogWithTimeout(level: LogLevel, timeoutSeconds: number): Promise<v
 }
 
 function cleanLogsSync(logsPath): void {
-  del.sync(logsPath);
+  logsPath = path.join(logsPath, '**');
+  rimraf.sync(logsPath);
 }
